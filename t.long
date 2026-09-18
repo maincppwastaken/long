@@ -1,0 +1,4 @@
+main:
+print "SLA" NL
+print "HELLO WORLD !"
+print "ANAO " NL

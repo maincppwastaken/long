@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistdio.h>
+#include <sys/stat.h>
+#include <string.h>
+typedef struct {
+    int start;
+    char* buffer;
+} retline;
+typedef struct {
+int start;
+char* string;
+int quantity;
+int aspas;
+int argument;
+int variable;
+} retword;
+retword getword(char* str, int index){
+    retword ret;
+    int spacecount = 1;
+    int strsize = strlen(str);
+    int start[strsize];
+    char *buffer = malloc(strsize+1);
+    int dentroaspas = 0;
+    start[0]=0;
+    start[1]=0;
+    for (int i=0;i<strsize;i++) {
+        if (str[i] == '"') {
+            dentroaspas = !dentroaspas;
+            printf("aspas = %i\n", dentroaspas);
+        }
+        else if (str[i] == ' ') {
+            if (dentroaspas ==0 ) {spacecount++;
+            start[spacecount] = i+1;
+            }
+        //    puts("espaco achado");
+        }
+    }
+    int loop = 0;
+    if (dentroaspas == 1) {
+        puts("ASPAS NAO FINALIZADA !");
+    }
+    dentroaspas = 0;
+    if(str[start[index]] == '"') {
+        ret.aspas=1;
+    }
+    int idx = start[index];
+    while (str[idx] != '\0') {
+        if (str[idx] == '"') {
+            dentroaspas = !dentroaspas;
+            idx++;
+            continue;
+        }
+        else if (str[idx] == ' ' && dentroaspas == 0) {
+            break;
+        }
+        buffer[loop] = str[idx];
+        idx++;
+        loop++;
+    }
+    buffer[loop] = '\0';
+    printf("\nbuffer = %s\n", buffer);
+    ret.quantity = spacecount;
+    ret.start = start[index];
+    ret.string = buffer;
+    return ret;
+
+}
+
+int countlines(const char* str) {
+    int result = 1;
+
+    for (int i=0;i<strlen(str);i++) {
+        if (str[i] == '\n') {
+            result++;
+        }
+    }
+    return result;
+}
+int countspaces(const char* str) {
+    int ret=0;
+    int aspas =0;
+    int strsize = strlen(str);
+    return ret;
+}
+retline getlines(char* str, int argline) {
+    retline ret;
+    char *buffer = malloc(strlen(str) + 1);
+    int start[strlen(str)];
+    int count = 1;
+    start[0] = 0;
+    for (int i=0;i<strlen(str);i++) {
+        if (str[i] == '\n') {
+            count++;
+            start[count] = i+1;
+        }
+    }
+    int loop = 0;
+    while (str[loop + start[argline]+1] != '\n' && str[loop + start[argline]+1] != '\0') {
+        buffer[loop] = str[loop + start[argline]];
+        loop++;
+    };
+    buffer[loop+1] = '\0';
+    buffer[loop] = str[loop+start[argline]];
+    ret.buffer = buffer;
+    ret.start = start[argline];
+    return ret;
+}
+
+struct stat st;
+int main(int a1, char** args) {
+    FILE* fptr = fopen(args[1], "r");
+    stat(args[1], &st);
+    int filesize = st.st_size;
+    char filecontent[filesize];
+    fread(filecontent, filesize, sizeof(char), fptr);
+    int filelines = countlines(filecontent);
+    printf("SIZE = %i\n", filesize);
+    printf("LINES = %i\n", filelines);
+    printf("FILE NAME = %s\n", args[1]);
+    retline result;
+    result = getlines(filecontent,3);
+    printf("LINE 3 = %s START = %i\n", result.buffer, result.start);
+    retword result2 = getword(result.buffer,2);
+    printf("word = %s quantity = %i start = %i", result2.string, result2.quantity,result2.start);
+    printf("%i\n", countspaces(result.buffer));
+
+    return 0;
+}
