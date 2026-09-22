@@ -2,3 +2,5 @@ main:
 print "SLA" NL
 print "HELLO WORLD !"
 print "ANAO " NL
+endfunc
+print "HELLOU" NL NL NL
