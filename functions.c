@@ -113,6 +113,7 @@ retline getlines(char* str, int argline) {
 int RunCode(char* codestr, int codesize, char* filename) {
     int ret = 1;
     int linescount = countlines(codestr);
+       int canstart = 0;
     printf("lines count = %i\n\n\n", linescount);
     for (int lineloop=0;lineloop<linescount;lineloop++) {
         retline actualline = getlines(codestr, lineloop);
@@ -120,13 +121,14 @@ int RunCode(char* codestr, int codesize, char* filename) {
         int wordcount = countwords(actualline.buffer);
         //printf("space counts %i\n", wordcount);
         if (wordcount>0) {
+           // puts("wcount");
             retword word = getword(actualline.buffer, 0);
-            int canstart = 0;
-            if (strcmp(word.string, "main:\n") == 0) {
+           // puts(word.string);
+            if (strcmp(word.string, "main:") == 0) {
                 canstart = 1;
             }
-            if (canstart) {
-            if (strcmp(getword(actualline.buffer, 0).string, "print") == 0) {
+            if (canstart == 1) {
+            if (strcmp(word.string, "print") == 0) {
                 print(actualline.buffer,wordcount,lineloop);
             }
             }
