@@ -16,7 +16,7 @@ int main(int a1, char** args) {
     printf("FILE NAME = %s\n", args[1]);
     int saida = RunCode(filecontent, filesize, args[1]);
     if (!saida) {
-        puts("codigo com erros");
+        puts("codigo com erros.");
     }
     return 0;
 }
